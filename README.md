@@ -5,7 +5,7 @@
 
 A Snakemake workflow for processing LUSTRE data.
 
-**Note (04/01/2024):** I'm currently refactoring the code to better comply with established best practices. Many components will change in the coming months.
+**Note (04/12/2024):** I'm currently refactoring the code to better comply with established best practices. Many components will change in the coming months.
 
 
 ## Usage
