@@ -2,3 +2,27 @@
 # Please follow the best practices: 
 # https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
 # in particular regarding the standardized folder structure mentioned there. 
+from snakemake.utils import min_version
+min_version("6.0")
+
+configfile: "config/config.yaml"
+
+
+REF = config["fasta_file"]
+
+(SAMPLES,) = glob_wildcards("fastq_lustre_cat_files/{sample}_read_1.fq.gz")
+
+include: "rules/trim_and_map.smk"
+include: "rules/preprocess.smk"
+include: "rules/calling.smk"
+include: "rules/reporting_regular.smk"
+include: "rules/make_fastq_files.smk"
+include: "rules/make_custom_reference.smk"
+include: "rules/custom_mapping_all_donors.smk"
+include: "rules/reporting_remapped.smk"
+include: "rules/make_tables.smk"
+
+
+rule all:
+    input:
+        get_final_output,

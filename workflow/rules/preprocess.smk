@@ -1,103 +1,83 @@
-configfile: "config.yaml"
-SAMPLES, = glob_wildcards("mapped_qname/{sample}.bam")
+CELLS, = glob_wildcards("results/mapped_qname/{cell}.bam")
 
 rule all:
     input:
-        UNK = expand("UNK_bam/{sample}.bam", sample=SAMPLES),
-        KNR = expand("KNR_bam/{sample}.bam", sample=SAMPLES),
-        KR = expand("KR_bam/{sample}.bam", sample=SAMPLES)
+        UNK = expand("UNK_bam/{cell}.bam", cell=CELLS),
+        KNR = expand("KNR_bam/{cell}.bam", cell=CELLS),
+        KR = expand("KR_bam/{cell}.bam", cell=CELLS)
 
 
 rule filter_bam:
-    input:
-        "mapped_qname/{sample}.bam"
+    input: bam = "results/mapped_qname/{cell}.bam"
     output:
-        bam = temp("mapped_qname_filtered/{sample}.bam"),
-        report = "filter_stats/{sample}.csv"
+        bam = temp("results/mapped_qname_filtered/{cell}.bam"),
+        report = "results/filter_stats/{cell}.csv"
     params:
-        sample = lambda w: w.sample
+        cell = lambda w: w.cell
     shell:
-        "python3 ../scripts/preprocessing/filter_bam.py -i {input} -o {output.bam} -r {output.report} -s {params.sample}"
+        "python3 workflow/scripts/preprocessing/filter_bam.py -i {input} -o {output.bam} -r {output.report} -s {params.cell}"
 
 rule split_files:
-    input:
-        "mapped_qname_filtered/{sample}.bam"
+    input: "results/mapped_qname_filtered/{cell}.bam"
     output:
-        r1 = "mapped_qname_r1/{sample}.bam",
-        r2 = "mapped_qname_r2/{sample}.bam"
+        r1 = "results/mapped_qname_r1/{cell}.bam",
+        r2 = "results/mapped_qname_r2/{cell}.bam"
     shell:
-        "python3 ../scripts/preprocessing/split_into_read1_and_read2.py -i {input} -r1 {output.r1} -r2 {output.r2}"
+        "python3 workflow/scripts/preprocessing/split_into_read1_and_read2.py -i {input} -r1 {output.r1} -r2 {output.r2}"
 
 rule get_KR:
     input:
-        "mapped_qname_r1/{sample}.bam"
+        "results/mapped_qname_r1/{cell}.bam"
     output:
-        temp("KR_bam_unsorted/{sample}.bam")
+        temp("results/KR_bam_unsorted/{cell}.bam")
     shell:
         "{config[bedtools]} window -u -w 10000 -b {config[KR_file]} -abam {input} > {output}"
 
 rule sort_KR:
     input:
-        "KR_bam_unsorted/{sample}.bam"
+        "results/KR_bam_unsorted/{cell}.bam"
     output:
-        "KR_bam/{sample}.bam"
+        "results/KR_bam/{cell}.bam"
     shell:
         "{config[samtools]} sort -o {output} {input}"
 
 rule get_KNR:
     input:
-        "mapped_qname_r1/{sample}.bam"
+        "results/mapped_qname_r1/{cell}.bam"
     output:
-        temp("KNR_bam_unsorted/{sample}.bam")
+        temp("results/KNR_bam_unsorted/{cell}.bam")
     shell:
         "{config[bedtools]} window -u -w 10000 -b {config[KNR_file]} -abam {input} > {output}"
 
 rule remove_concordant_KNR:
-    input:
-        "KNR_bam_unsorted/{sample}.bam"
+    input: "results/KNR_bam_unsorted/{cell}.bam"
     output:
-        discon = temp("KNR_bam_filtered/{sample}.bam"),
-        concord = "KNR_bam_concord/{sample}.bam"
+        discon = temp("results/KNR_bam_filtered/{cell}.bam"),
+        concord = "results/KNR_bam_concord/{cell}.bam"
     shell:
-        "python3 ../scripts/preprocessing/remove_concordant.py -i {input} -o1 {output.discon} -o2 {output.concord}"
+        "python3 workflow/scripts/preprocessing/remove_concordant.py -i {input} -o1 {output.discon} -o2 {output.concord}"
 
 rule sort_KNR:
-    input:
-        "KNR_bam_filtered/{sample}.bam"
-    output:
-        "KNR_bam/{sample}.bam"
-    shell:
-        "{config[samtools]} sort -o {output} {input}"
+    input: "results/KNR_bam_filtered/{cell}.bam"
+    output: "results/KNR_bam/{cell}.bam"
+    shell: "{config[samtools]} sort -o {output} {input}"
 
 rule filter_KR:
-    input:
-        "mapped_qname_r1/{sample}.bam"
-    output:
-        temp("KR_filter/{sample}.bam")
-    shell:
-        "{config[bedtools]} window -v -w 10000 -b {config[KR_file]} -abam {input} > {output}"
+    input: "results/mapped_qname_r1/{cell}.bam"
+    output: temp("results/KR_filter/{cell}.bam")
+    shell: "{config[bedtools]} window -v -w 10000 -b {config[KR_file]} -abam {input} > {output}"
 
 rule filter_KNR:
-    input:
-        "KR_filter/{sample}.bam"
-    output:
-        temp("KNR_filter/{sample}.bam")
-    shell:
-        "{config[bedtools]} window -v -w 10000 -b {config[KNR_file]} -abam {input} > {output}"
+    input: "results/KR_filter/{cell}.bam"
+    output: temp("results/KNR_filter/{cell}.bam")
+    shell: "{config[bedtools]} window -v -w 10000 -b {config[KNR_file]} -abam {input} > {output}"
         
 rule remove_concordant_UNK:
-    input:
-        "KNR_filter/{sample}.bam"
-    output:
-        discon = temp("UNK_bam_unsorted/{sample}.bam"),
-        concord = "UNK_bam_concord/{sample}.bam"
-    shell:
-        "python3 ../scripts/preprocessing/remove_concordant.py -i {input} -o1 {output.discon} -o2 {output.concord}"
+    input: "results/KNR_filter/{cell}.bam"
+    output: discon = temp("results/UNK_bam_unsorted/{cell}.bam"), concord = "results/UNK_bam_concord/{cell}.bam"
+    shell: "python3 workflow/scripts/preprocessing/remove_concordant.py -i {input} -o1 {output.discon} -o2 {output.concord}"
         
 rule sort_UNK:
-    input:
-        "UNK_bam_unsorted/{sample}.bam"
-    output:
-        "UNK_bam/{sample}.bam"
-    shell: 
-        "{config[samtools]} sort -o {output} {input}"
+    input: "results/UNK_bam_unsorted/{cell}.bam"
+    output: "results/UNK_bam/{cell}.bam"
+    shell:  "{config[samtools]} sort -o {output} {input}"

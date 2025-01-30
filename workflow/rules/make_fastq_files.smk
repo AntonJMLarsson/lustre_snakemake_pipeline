@@ -1,13 +1,10 @@
-SAMPLES, = glob_wildcards("mapped_qname_r1/{sample}.bam")
+
 
 rule all:
     input:
-        expand("polyA_rich_fastqs/{sample}.fastq.gz", sample=SAMPLES)
+        expand("polyA_rich_fastqs/{cell}.fastq.gz", cell=CELLS)
 
 rule make_fastqs:
-    input:
-        "mapped_qname_r1/{sample}.bam"
-    output:
-        "polyA_rich_fastqs/{sample}.fastq.gz"
-    shell:
-        "python3 ../scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
+    input: "results/mapped_qname_r1/{cell}.bam"
+    output: "results/polyA_rich_fastqs/{cell}.fastq.gz"
+    shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
