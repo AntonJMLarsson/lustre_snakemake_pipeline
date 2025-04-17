@@ -20,7 +20,7 @@ include: "rules/reporting_regular.smk"
 include: "rules/custom_remapping.smk"
 include: "rules/reporting_remapped.smk"
 include: "rules/make_tables.smk"
-includo: "rules/common.smk"
+include: "rules/common.smk"
 
 
 rule all:
