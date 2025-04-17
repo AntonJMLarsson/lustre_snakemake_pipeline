@@ -1,4 +1,4 @@
-configfile: "custom_mapping_donor.yaml"
+
 ALL_SAMPLES, = glob_wildcards("polyA_rich_fastqs/{sample}.fastq.gz")
 SPECIFIC_SAMPLES = set([line.rstrip() for line in open(config["cell_file"])])
 
