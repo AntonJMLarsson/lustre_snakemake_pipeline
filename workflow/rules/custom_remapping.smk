@@ -27,7 +27,7 @@ for donor, donor_config in config['custom_references'].items():
         name: "add_germline_intervals_{}".format(donor)
         input: "results/custom_references/{prefix}.UNK_merged.bed".format(prefix = donor)
         output: "results/custom_references/{prefix}.all_merged.bed".format(prefix = donor)
-        shell: "cat {input} {config[KNR_bed]} {config[KR_bed]} > {output}"    
+        shell: "cat {input} {config[KNR_remap]} {config[KR_remap]} > {output}"    
     rule:
         name: "make_fasta_{}".format(donor)
         input: "results/custom_references/{prefix}.all_merged.bed".format(prefix = donor)
