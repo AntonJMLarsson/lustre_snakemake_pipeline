@@ -1,7 +1,7 @@
 
 rule fastp:
     input:
-        r1 = config["r1"]
+        r1 = config["r1"],
         r2 = config["r2"]
     output:
         out_r1 = "results/fastq_files_trimmed/{project}_read_1.fq.gz".format(project=config["project"]),
