@@ -40,6 +40,6 @@ checkpoint demx:
     {config[split_barcoded_bam]} {input} mapped_qname/ BC {config[expected_barcodes]}
     """
 
-def aggregate_input(wildcards):
+def get_cells(wildcards):
     checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
-    return expand("mapped_qname/{cell}.bam", cell = glob_wildcards(os.path.join(checkpoint_output,"{cell}.bam")).cell)
+    return [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam")]
