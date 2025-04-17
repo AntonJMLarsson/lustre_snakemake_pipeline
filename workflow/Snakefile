@@ -4,6 +4,7 @@
 # in particular regarding the standardized folder structure mentioned there. 
 from snakemake.utils import min_version
 min_version("6.0")
+import os
 
 configfile: "config/config.yaml"
 
@@ -16,13 +17,11 @@ include: "rules/trim_and_map.smk"
 include: "rules/preprocess.smk"
 include: "rules/calling.smk"
 include: "rules/reporting_regular.smk"
-include: "rules/make_fastq_files.smk"
-include: "rules/make_custom_reference.smk"
-include: "rules/custom_mapping_all_donors.smk"
+include: "rules/custom_remapping.smk"
 include: "rules/reporting_remapped.smk"
 include: "rules/make_tables.smk"
 
 
 rule all:
     input:
-        get_final_output,
+        get_final_output, aggregate_input

@@ -1,4 +1,4 @@
-project: 230818_LUSTRExSS3_RUN
+project: 250328_LUSTRE
 idx_fastq:
 samplesheet: samplesheet.csv
 expected_barcodes: barcodes.txt
@@ -16,3 +16,10 @@ fastp: fastp
 demultiplex_fastq:
 split_barcoded_bam: ../split_barcoded_bam/target/release/split_barcoded_bam
 
+custom_references:
+  HCT116:
+    file_list: ['results/regular_stats/250328_LUSTRE_UNK_HCT116_stats.csv']
+    cell_file: ['config/HCT116_cells.txt']
+  RPE:
+    file_list: ['results/regular_stats/250328_LUSTRE_UNK_RPE_stats.csv']
+    cell_file: ['config/RPE_cells.txt']

@@ -1,10 +1,3 @@
-CELLS, = glob_wildcards("results/mapped_qname/{cell}.bam")
-
-rule all:
-    input:
-        UNK = expand("UNK_bam/{cell}.bam", cell=CELLS),
-        KNR = expand("KNR_bam/{cell}.bam", cell=CELLS),
-        KR = expand("KR_bam/{cell}.bam", cell=CELLS)
 
 
 rule filter_bam:
