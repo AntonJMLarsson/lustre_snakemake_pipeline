@@ -24,4 +24,4 @@ include: "rules/make_tables.smk"
 
 rule all:
     input:
-        get_final_output, aggregate_input
+        get_final_output
