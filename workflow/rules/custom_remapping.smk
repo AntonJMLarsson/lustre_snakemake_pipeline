@@ -5,7 +5,7 @@ rule make_fastqs:
 
 for donor, donor_config in config['custom_references'].items():
     SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
-    SAMPLES = set(SPECIFIC_SAMPLES.intersection(glob_wildcards(os.path.join("mapped_qname","{cell}.bam"))))
+    SAMPLES = set(SPECIFIC_SAMPLES.intersection(set(glob_wildcards(os.path.join("mapped_qname","{cell}.bam")))))
     rule:
         name: "make_bed_file_{}".format(donor)
         input: donor_config["file_list"]
