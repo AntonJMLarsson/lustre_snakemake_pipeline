@@ -4,7 +4,7 @@ rule make_fastqs:
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
 
 for donor, donor_config in config['custom_references'].items():
-    SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"])])
+    SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
     SAMPLES = list(SPECIFIC_SAMPLES.intersection(CELLS))
     rule:
         name: "make_bed_file_{}".format(donor)
