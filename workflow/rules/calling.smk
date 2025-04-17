@@ -140,7 +140,7 @@ rule filter_UNK:
     output: "results/UNK_insertions_unmerged.bed"
     shell: "python3 workflow/scripts/calling/tag_site_filtering.py -i {input.bed} -b {input.bam} -o {output}"
 
-rule filter_KNR:
+rule filter_KNR_1:
     input: bed = "results/KNR_intervals_merged.KR_filtered.bed", bam = "results/KNR_discond_merged.sorted.bam"
     output: "results/KNR_insertions_unmerged.bed"
     shell: "python3 workflow/scripts/calling/tag_site_filtering.py -i {input.bed} -b {input.bam} -o {output}"
