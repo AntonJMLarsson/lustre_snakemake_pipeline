@@ -3,9 +3,15 @@ idx_fastq:
 samplesheet: samplesheet.csv
 expected_barcodes: barcodes.txt
 fasta_file: ../reference_genomes/hg38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
-KNR_file: ../resources/nonref.collection.hg38.chr.L1.bed
-old_KNR_file: ../resources/KNR_chr.bed
-KR_file: ../resources/KR_chr.bed
+KNR_file: /home/antonl/resources/lustre_bed_files/nonref.collection.hg38.chr.L1.bed
+old_KNR_file: /home/antonl/resources/lustre_bed_files/KNR_chr.bed
+KR_file: /home/antonl/resources/lustre_bed_files/KR_chr.bed
+
+KNR_remap: /home/antonl/resources/lustre_bed_files/KNR_full.bed
+KR_remap: /home/antonl/resources/lustre_bed_files/KR_full.bed
+
+r1: 
+r2:
 
 threads: 50
 
@@ -14,7 +20,7 @@ bedtools: bedtools
 bwa: bwa
 fastp: fastp
 demultiplex_fastq:
-split_barcoded_bam: ../split_barcoded_bam/target/release/split_barcoded_bam
+split_barcoded_bam: /home/antonl/resources/code/split_barcoded_bam/target/release/split_barcoded_bam
 
 custom_references:
   HCT116:
