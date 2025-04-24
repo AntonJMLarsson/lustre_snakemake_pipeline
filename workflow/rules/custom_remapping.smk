@@ -1,8 +1,3 @@
-rule make_fastqs:
-    input: "results/mapped_qname_r1/{cell}.bam"
-    output: "results/polyA_rich_fastqs/{cell}.fastq.gz"
-    shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
-
 def get_cells_donor(wildcards, l, donor):
     checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
     print(checkpoint_output)
@@ -13,6 +8,11 @@ def get_cells_donor(wildcards, l, donor):
 for donor, donor_config in config['custom_references'].items():
     TAG = "BC"
 
+    rule:
+        name: "make_fastqs_{}".format(donor)
+        input: "results/mapped_qname_r1/{sample}.bam"
+        output: "results/polyA_rich_fastqs/{sample}.fastq.gz"
+        shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
     rule:
         name: "make_bed_file_{}".format(donor)
         input: donor_config["file_list"]
