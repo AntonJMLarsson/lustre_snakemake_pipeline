@@ -49,11 +49,11 @@ for donor, donor_config in config['custom_references'].items():
 rule:
     name: "bwa_mem"
     input:
-        reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = config['cbc_to_donor'][wildcards.sample])
+        reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = lambda wildcards: "results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]), faidx = lambda wildcards: "results/custom_references/{prefix}.fa.ann".format(prefix = config['cbc_to_donor'][wildcards.sample])
     output: "results/polyA_rich_mapped_custom/{sample}.bam" 
     log: "logs/bwa_mem_extra/{sample}.no_alt.txt"
     params:
-        index="results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]),
+        index= lambda wildcards: "results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]),
         extra=r"-R '@RG\tBC:{sample,[A-Z]+}'",
         sort="none",             # Can be 'none', 'samtools' or 'picard'.
         sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
