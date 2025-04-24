@@ -1,6 +1,6 @@
 for donor, donor_config in config['custom_references'].items():
     TAG = "BC"
-
+    print(donor)
     def get_cells_donor(wildcards, l, donor=donor):
         checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
         print(checkpoint_output)
@@ -66,7 +66,7 @@ for donor, donor_config in config['custom_references'].items():
         output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam"
         shell: "python3 workflow/scripts/refine/convert_coordinates_custom_mapping.py -i {input.polyA_bam} -head {input.header_bam} -o {output}"
 
-    checkpoint:
+    rule:
         name: "concat_bams_{}".format(donor)
         input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=get_cells_donor(wildcards, config['{}_specific_samples'.format(donor)]))
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
