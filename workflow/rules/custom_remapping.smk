@@ -41,12 +41,12 @@ for donor, donor_config in config['custom_references'].items():
     rule:
         name: "bwa_mem_{}".format(donor)
         input:
-            reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = donor), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
-        output: "results/polyA_rich_mapped_custom/{sample}_" + "{prefix}.bam".format(prefix = donor)
-        log: "logs/bwa_mem_extra/{sample}.no_alt.txt"
+            reads="results/polyA_rich_fastqs/{sample,[A-Z]+}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = donor), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
+        output: "results/polyA_rich_mapped_custom/{sample,[A-Z]+}_" + "{prefix}.bam".format(prefix = donor)
+        log: "logs/bwa_mem_extra/{sample,[A-Z]+}.no_alt.txt"
         params:
             index="results/custom_references/{prefix}.fa".format(prefix = donor),
-            extra=r"-R '@RG\tBC:{sample}'",
+            extra=r"-R '@RG\tBC:{sample,[A-Z]+}'",
             sort="none",             # Can be 'none', 'samtools' or 'picard'.
             sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
             sort_extra="TMP_DIR=tmp/"            # Extra args for samtools/picard.
@@ -56,14 +56,14 @@ for donor, donor_config in config['custom_references'].items():
     rule:
         name: "transform_bam_{}".format(donor)
         input:
-            polyA_bam = "results/polyA_rich_mapped_custom/{sample}_" + "{prefix}.bam".format(prefix = donor),
+            polyA_bam = "results/polyA_rich_mapped_custom/{sample,[A-Z]+}_" + "{prefix}.bam".format(prefix = donor),
             header_bam = "results/UNK_discond_merged.sorted.bam"
-        output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam"
+        output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample,[A-Z]+}.bam"
         shell: "python3 workflow/scripts/refine/convert_coordinates_custom_mapping.py -i {input.polyA_bam} -head {input.header_bam} -o {output}"
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}_" + "{prefix}.bam".format(prefix = donor), sample=SAMPLES)
+        input: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample,[A-Z]+}_" + "{prefix}.bam".format(prefix = donor), sample=SAMPLES)
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
