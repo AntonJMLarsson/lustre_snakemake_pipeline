@@ -34,5 +34,6 @@ checkpoint demx:
     """
 
 def get_cells(wildcards):
-    checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
-    return [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam")]
+    ck_output = checkpoints.demx.get(**wildcards).output[0]
+    SMP, = glob_wildcards(os.path.join(ck_output, "{cell}.bam"))
+    return expand(os.path.join(ck_output, "{cell}.bam"), cell=SMP)
