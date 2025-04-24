@@ -6,7 +6,7 @@ def get_cells_donor(wildcards, l, donor):
         return res
 
 rule:
-    name: "make_fastqs_{}".format(donor)
+    name: "make_fastqs"
     input: "results/mapped_qname_r1/{sample}.bam"
     output: "results/polyA_rich_fastqs/{sample}.fastq.gz"
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
