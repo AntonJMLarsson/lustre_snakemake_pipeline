@@ -4,7 +4,7 @@ rule make_fastqs:
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
 
 checkpoint fastq:
-    input: lambda wildcards: expand("results/polyA_rich_fastqs/{cell}.fastq.gz", cell=get_cells(wildcards))
+    input: lambda wildcards: expand("results/polyA_rich_fastqs/{fq}.fastq.gz", fq=get_cells(wildcards))
     output: directory("results/polyA_rich_fastqs/")
 
 def check_fastqs(wildcards):
