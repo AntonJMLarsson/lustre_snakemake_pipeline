@@ -3,6 +3,11 @@ rule make_fastqs:
     output: "results/polyA_rich_fastqs/{cell}.fastq.gz"
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
 
+def get_cells_donor(wildcards, l):
+    checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
+    print(checkpoint_output)
+    return [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
+
 for donor, donor_config in config['custom_references'].items():
     TAG = "BC"
 
@@ -61,7 +66,7 @@ for donor, donor_config in config['custom_references'].items():
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=config['{}_specific_samples'.format(donor)])
+        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=get_cells_donor(wildcards, config['{}_specific_samples'.format(donor)]))
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
