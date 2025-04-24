@@ -6,7 +6,9 @@ rule make_fastqs:
 def get_cells_donor(wildcards, l):
     checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
     print(checkpoint_output)
-    return [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
+    res = [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
+    print(res)
+    return 
 
 for donor, donor_config in config['custom_references'].items():
     TAG = "BC"
