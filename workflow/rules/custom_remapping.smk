@@ -8,7 +8,7 @@ def get_cells_donor(wildcards, l):
     print(checkpoint_output)
     res = [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
     print(res)
-    return 
+    return res
 
 for donor, donor_config in config['custom_references'].items():
     TAG = "BC"
