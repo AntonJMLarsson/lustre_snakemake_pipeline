@@ -4,8 +4,6 @@ rule make_fastqs:
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
 
 for donor, donor_config in config['custom_references'].items():
-    SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
-    print(SPECIFIC_SAMPLES)
     TAG = "BC"
 
     rule:
@@ -63,7 +61,7 @@ for donor, donor_config in config['custom_references'].items():
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=SPECIFIC_SAMPLES)
+        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=config['{}_specific_samples'.format()])
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
