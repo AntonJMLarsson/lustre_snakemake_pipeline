@@ -1,8 +1,8 @@
 project: 250328_LUSTRE
 idx_fastq:
-samplesheet: samplesheet.csv
-expected_barcodes: barcodes.txt
-fasta_file: ../reference_genomes/hg38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
+samplesheet: /mnt/data/projects/jeffs_cells/lustre_snakemake_pipeline/config/250328_LUSTRE_samplesheet.csv
+expected_barcodes: /mnt/data/projects/jeffs_cells/lustre_snakemake_pipeline/config/250328_LUSTRE_expected_barcodes.txt
+fasta_file: /home/antonl/resources/reference_genomes/hg38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
 KNR_file: /home/antonl/resources/lustre_bed_files/nonref.collection.hg38.chr.L1.bed
 old_KNR_file: /home/antonl/resources/lustre_bed_files/KNR_chr.bed
 KR_file: /home/antonl/resources/lustre_bed_files/KR_chr.bed
@@ -10,14 +10,14 @@ KR_file: /home/antonl/resources/lustre_bed_files/KR_chr.bed
 KNR_remap: /home/antonl/resources/lustre_bed_files/KNR_full.bed
 KR_remap: /home/antonl/resources/lustre_bed_files/KR_full.bed
 
-r1: 
-r2:
+r1: /mnt/data/projects/jeffs_cells/fastq_files/lustre_cat/V350313946_V3503139820_V350313986_lustre_1.fq.gz
+r2: /mnt/data/projects/jeffs_cells/fastq_files/lustre_cat/V350313946_V3503139820_V350313986_lustre_2.fq.gz
 
-threads: 50
+threads: 48
 
 samtools: samtools
 bedtools: bedtools
-bwa: bwa
+bwa: /home/antonl/resources/code/bwa-mem2-2.2.1_x64-linux/bwa-mem2.avx
 fastp: fastp
 demultiplex_fastq:
 split_barcoded_bam: /home/antonl/resources/code/split_barcoded_bam/target/release/split_barcoded_bam

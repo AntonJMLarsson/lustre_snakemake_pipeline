@@ -16,6 +16,7 @@ def transform_reads(bamfile_in, header_bam, bamfile_out):
     bam_in = pysam.AlignmentFile(bamfile_in,'rb')
     bam_h = pysam.AlignmentFile(header_bam,'rb')
     bam_out = pysam.AlignmentFile(bamfile_out, 'wb',template=bam_h)
+    cell = bamfile_in.split('/')[-1].split('_')[0]
 
     for read in bam_in.fetch(until_eof=True):
         read_dict = read.to_dict()
@@ -24,7 +25,9 @@ def transform_reads(bamfile_in, header_bam, bamfile_out):
         read_dict['ref_pos'] = str(tup[1]+1)
         if tup[0] is None:
             print('Unmapped')
-        bam_out.write(pysam.AlignedSegment.from_dict(read_dict, bam_out.header))
+        read = pysam.AlignedSegment.from_dict(read_dict, bam_out.header)
+        read.set_tag('BC', cell)
+        bam_out.write(read)
 
     bam_in.close()
     bam_out.close()
