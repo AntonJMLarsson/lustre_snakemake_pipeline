@@ -55,14 +55,14 @@ for donor, donor_config in config['custom_references'].items():
     rule:
         name: "transform_bam_{}".format(donor)
         input:
-            polyA_bam = "results/polyA_rich_mapped_custom/{sample}_" + "{prefix}.bam".format(prefix = donor),
+            polyA_bam = "results/polyA_rich_mapped_custom/{sample}.bam",
             header_bam = "results/UNK_discond_merged.sorted.bam"
         output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam"
         shell: "python3 workflow/scripts/refine/convert_coordinates_custom_mapping.py -i {input.polyA_bam} -head {input.header_bam} -o {output}"
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}_" + "{prefix}.bam".format(prefix = donor), sample=set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards)))))
+        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards)))))
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
