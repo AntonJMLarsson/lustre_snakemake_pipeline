@@ -3,14 +3,6 @@ rule make_fastqs:
     output: "results/polyA_rich_fastqs/{cell}.fastq.gz"
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
 
-checkpoint fastq:
-    input: lambda wildcards: expand("results/polyA_rich_fastqs/{fq}.fastq.gz", fq=get_cells(wildcards))
-    output: directory("results/polyA_rich_fastqs/")
-
-def check_fastqs(wildcards):
-    fq_output = checkpoints.fastq.get(**wildcards).output[0]
-    FQ, = glob_wildcards(os.path.join(fq_output, "{fq}.fastq.gz"))
-    return expand("{fq}", fq=FQ)
 
 for donor, donor_config in config['custom_references'].items():
     SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
@@ -71,7 +63,7 @@ for donor, donor_config in config['custom_references'].items():
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{cell}_" + "{prefix}.bam".format(prefix = donor), cell=set(SPECIFIC_SAMPLES.intersection(set(check_fastqs(wildcards)))))
+        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{cell}_" + "{prefix}.bam".format(prefix = donor), cell=set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards)))))
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
