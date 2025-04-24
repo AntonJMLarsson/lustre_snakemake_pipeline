@@ -1,13 +1,14 @@
-for donor, donor_config in config['custom_references'].items():
-    TAG = "BC"
-    print(donor)
-    def get_cells_donor(wildcards, l, donor=donor):
+def get_cells_donor(wildcards, l, donor=donor):
         checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
         print(checkpoint_output)
         res = [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
         print(donor, len(res))
         return res
 
+for donor, donor_config in config['custom_references'].items():
+
+
+    TAG = "BC"
     rule:
         name: "make_fastqs_{}".format(donor)
         input: "results/mapped_qname_r1/{sample}.bam"
@@ -68,10 +69,9 @@ for donor, donor_config in config['custom_references'].items():
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=get_cells_donor(wildcards, config['{}_specific_samples'.format(donor)]))
+        input: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=config['{}_specific_samples'.format(donor)])
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
-    print('bla')
 
 rule concat_donor_bams:
     input: expand("results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam", donor=config['custom_references'].keys())
