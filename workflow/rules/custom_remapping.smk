@@ -5,6 +5,7 @@ rule make_fastqs:
 
 for donor, donor_config in config['custom_references'].items():
     SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
+    print(SPECIFIC_SAMPLES)
     TAG = "BC"
 
     rule:
