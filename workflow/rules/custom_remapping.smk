@@ -58,7 +58,7 @@ for donor, donor_config in config['custom_references'].items():
         input:
             polyA_bam = "results/polyA_rich_mapped_custom/{sample,[A-Z]+}_" + "{prefix}.bam".format(prefix = donor),
             header_bam = "results/UNK_discond_merged.sorted.bam"
-        output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample,[A-Z]+}.bam"
+        output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam"
         shell: "python3 workflow/scripts/refine/convert_coordinates_custom_mapping.py -i {input.polyA_bam} -head {input.header_bam} -o {output}"
 
     rule:
