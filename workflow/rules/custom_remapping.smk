@@ -45,7 +45,7 @@ for donor, donor_config in config['custom_references'].items():
         input: "results/custom_references/{prefix}.fa".format(prefix = donor)
         output: "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
         shell: "{config[bwa]} index {input}"
-
+print(config['cbc_to_donor'])
 rule:
     name: "bwa_mem"
     input:
