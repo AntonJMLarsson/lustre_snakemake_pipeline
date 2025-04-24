@@ -4,21 +4,21 @@ rule all:
 
 rule make_fastqs:
     input:
-        "results/mapped_qname_r1/{cell}.bam"
+        "results/mapped_qname_r1/{cell,[A-Z]+}.bam"
     output:
-        temp("results/possible_transduction_fastqs/{cell}.fastq.gz")
+        temp("results/possible_transduction_fastqs/{cell,[A-Z]+}.fastq.gz")
     shell:
         "python3 workflow/scripts/refine/extract_possible_transduction_reads.py -i {input} -o {output}"
 rule bwa_mem:
     input:
-        reads="results/possible_transduction_fastqs/{cell}.fastq.gz"
+        reads="results/possible_transduction_fastqs/{cell,[A-Z]+}.fastq.gz"
     output:
-        temp("results/possible_transduction_mapped/{cell}.bam")
+        temp("results/possible_transduction_mapped/{cell,[A-Z]+}.bam")
     log:
-        "results/logs/bwa_mem/{cell}.no_alt.txt"
+        "results/logs/bwa_mem/{cell,[A-Z]+}.no_alt.txt"
     params:
         index=REF,
-        extra=r"-R '@RG\tID:{cell}'",
+        extra=r"-R '@RG\tID:{cell,[A-Z]+}'",
         sort="none",             # Can be 'none', 'samtools' or 'picard'.
         sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
         sort_extra="TMP_DIR=tmp/"            # Extra args for samtools/picard.
@@ -26,7 +26,7 @@ rule bwa_mem:
     wrapper:
         "0.49.0/bio/bwa/mem"
 rule cat:
-    input: expand("results/possible_transduction_mapped/{cell}.bam", cell=cellS)
+    input: expand("results/possible_transduction_mapped/{cell,[A-Z]+}.bam", cell=cellS)
     output: temp("results/Transduction_reads.bam")
     shell: "samtools cat -o {output} results/possible_transduction_mapped/*.bam"
 rule sort:
