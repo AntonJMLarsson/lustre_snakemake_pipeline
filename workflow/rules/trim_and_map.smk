@@ -35,4 +35,6 @@ checkpoint demx:
 
 def get_cells(wildcards):
     checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
+    print(checkpoint_output)
+    print([f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam")])
     return [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam")]

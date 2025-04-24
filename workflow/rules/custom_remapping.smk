@@ -41,7 +41,7 @@ for donor, donor_config in config['custom_references'].items():
         name: "bwa_mem_{}".format(donor)
         input:
             reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = donor), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
-        output: "results/polyA_rich_mapped_custom/{sample,[A-Z]+}_" + "{prefix}.bam".format(prefix = donor)
+        output: "results/polyA_rich_mapped_custom/{sample}_" + "{prefix}.bam".format(prefix = donor)
         log: "logs/bwa_mem_extra/{sample,[A-Z]+}.no_alt.txt"
         params:
             index="results/custom_references/{prefix}.fa".format(prefix = donor),
