@@ -5,15 +5,16 @@ def get_cells_donor(wildcards, l, donor):
         print(donor, len(res))
         return res
 
+rule:
+    name: "make_fastqs_{}".format(donor)
+    input: "results/mapped_qname_r1/{sample}.bam"
+    output: "results/polyA_rich_fastqs/{sample}.fastq.gz"
+    shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
+
 for donor, donor_config in config['custom_references'].items():
 
 
     TAG = "BC"
-    rule:
-        name: "make_fastqs_{}".format(donor)
-        input: "results/mapped_qname_r1/{sample}.bam"
-        output: "results/polyA_rich_fastqs/{sample}.fastq.gz"
-        shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
     rule:
         name: "make_bed_file_{}".format(donor)
         input: donor_config["file_list"]
@@ -44,37 +45,33 @@ for donor, donor_config in config['custom_references'].items():
         input: "results/custom_references/{prefix}.fa".format(prefix = donor)
         output: "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
         shell: "{config[bwa]} index {input}"
-    rule:
-        name: "bwa_mem_{}".format(donor)
-        input:
-            reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = donor), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
-        output: "results/polyA_rich_mapped_custom/{sample}.bam" 
-        log: "logs/bwa_mem_extra/{sample}.no_alt.txt"
-        params:
-            index="results/custom_references/{prefix}.fa".format(prefix = donor),
-            extra=r"-R '@RG\tBC:{sample,[A-Z]+}'",
-            sort="none",             # Can be 'none', 'samtools' or 'picard'.
-            sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
-            sort_extra="TMP_DIR=tmp/"            # Extra args for samtools/picard.
-        threads: 1
-        shell: "{config[bwa]} mem {params.index} {input.reads} | {config[samtools]} view -bS > {output}"
 
-    rule:
-        name: "transform_bam_{}".format(donor)
-        input:
-            polyA_bam = "results/polyA_rich_mapped_custom/{sample}.bam",
-            header_bam = "results/UNK_discond_merged.sorted.bam"
-        output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam"
-        shell: "python3 workflow/scripts/refine/convert_coordinates_custom_mapping.py -i {input.polyA_bam} -head {input.header_bam} -o {output}"
+rule:
+    name: "bwa_mem"
+    input:
+        reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = config['cbc_to_donor'][wildcards.sample])
+    output: "results/polyA_rich_mapped_custom/{sample}.bam" 
+    log: "logs/bwa_mem_extra/{sample}.no_alt.txt"
+    params:
+        index="results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]),
+        extra=r"-R '@RG\tBC:{sample,[A-Z]+}'",
+        sort="none",             # Can be 'none', 'samtools' or 'picard'.
+        sort_order="queryname",  # Can be 'queryname' or 'coordinate'.
+        sort_extra="TMP_DIR=tmp/"            # Extra args for samtools/picard.
+    threads: 1
+    shell: "{config[bwa]} mem {params.index} {input.reads} | {config[samtools]} view -bS > {output}"
 
-    rule:
-        name: "concat_bams_{}".format(donor)
-        input: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=config['{}_specific_samples'.format(donor)])
-        output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
-        shell: "samtools cat -o {output} {input}"
+rule:
+    name: "transform_bam"
+    input:
+        polyA_bam = "results/polyA_rich_mapped_custom/{sample}.bam",
+        header_bam = "results/UNK_discond_merged.sorted.bam"
+    output: "results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam"
+    shell: "python3 workflow/scripts/refine/convert_coordinates_custom_mapping.py -i {input.polyA_bam} -head {input.header_bam} -o {output}"
 
-rule concat_donor_bams:
-    input: expand("results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam", donor=config['custom_references'].keys())
+rule:
+    name: "concat_bams"
+    input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=get_cells(wildcards))
     output: "results/polyA_rich_mapped_custom_concat.transformed.bam"
     shell: "samtools cat -o {output} {input}"
 
