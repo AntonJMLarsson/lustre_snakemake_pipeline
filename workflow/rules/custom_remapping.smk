@@ -6,7 +6,6 @@ rule make_fastqs:
 for donor, donor_config in config['custom_references'].items():
     SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
     SAMPLES = lambda wildcards: set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards))))
-    SAMPLES = SAMPLES(wildcards)
     TAG = "BC"
 
     rule:
