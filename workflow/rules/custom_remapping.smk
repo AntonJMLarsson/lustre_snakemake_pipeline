@@ -1,4 +1,4 @@
-def get_cells_donor(wildcards, l, donor=donor):
+def get_cells_donor(wildcards, l, donor):
         checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
         print(checkpoint_output)
         res = [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
