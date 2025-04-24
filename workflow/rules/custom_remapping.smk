@@ -71,6 +71,7 @@ for donor, donor_config in config['custom_references'].items():
         input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=get_cells_donor(wildcards, config['{}_specific_samples'.format(donor)]))
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
+    print('bla')
 
 rule concat_donor_bams:
     input: expand("results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam", donor=config['custom_references'].keys())
