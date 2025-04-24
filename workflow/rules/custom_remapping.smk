@@ -5,6 +5,7 @@ rule make_fastqs:
 
 for donor, donor_config in config['custom_references'].items():
     SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
+    SAMPLES = set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards))))
     TAG = "BC"
 
     rule:
@@ -62,7 +63,7 @@ for donor, donor_config in config['custom_references'].items():
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards)))))
+        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=SAMPLES)
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
