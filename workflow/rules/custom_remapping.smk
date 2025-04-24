@@ -5,7 +5,6 @@ rule make_fastqs:
 
 for donor, donor_config in config['custom_references'].items():
     SPECIFIC_SAMPLES = set([line.rstrip() for line in open(donor_config["cell_file"][0])])
-    SAMPLES = lambda wildcards: set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards))))
     TAG = "BC"
 
     rule:
@@ -43,7 +42,7 @@ for donor, donor_config in config['custom_references'].items():
         input:
             reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = "results/custom_references/{prefix}.fa".format(prefix = donor), faidx = "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
         output: "results/polyA_rich_mapped_custom/{sample}.bam" 
-        log: "logs/bwa_mem_extra/{sample,[A-Z]+}.no_alt.txt"
+        log: "logs/bwa_mem_extra/{sample}.no_alt.txt"
         params:
             index="results/custom_references/{prefix}.fa".format(prefix = donor),
             extra=r"-R '@RG\tBC:{sample,[A-Z]+}'",
@@ -63,7 +62,7 @@ for donor, donor_config in config['custom_references'].items():
 
     rule:
         name: "concat_bams_{}".format(donor)
-        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=SAMPLES(wildcards))
+        input: lambda wildcards: expand("results/polyA_rich_mapped_custom_tagged_transformed/{sample}.bam", sample=set(SPECIFIC_SAMPLES.intersection(set(get_cells(wildcards)))))
         output: "results/polyA_rich_mapped_custom_concat.transformed.{donor}.bam".format(donor=donor)
         shell: "samtools cat -o {output} {input}"
 
