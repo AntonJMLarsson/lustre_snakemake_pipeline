@@ -102,12 +102,12 @@ rule remove_supplemental_UNK:
 
 rule get_KNR_intervals:
     input: "results/KNR_bam_concord_filtered_no_supp/{cell}.bam"
-    output: "results/KNR_intervals_bed/{cell}.bed"
+    output: "results/KNR_intervals_bed/{cell}".replace('.bam', '.bed')
     shell: "{config[bedtools]} bamtobed -i {input} | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000  -c 5 -o mean -i - > {output}"
 
 rule get_UNK_intervals:
     input: "results/UNK_bam_concord_filtered_no_supp/{cell}.bam"
-    output: "results/UNK_intervals_bed/{cell}.bed"
+    output: "results/UNK_intervals_bed/{cell}".replace('.bam', '.bed')
     shell: "{config[bedtools]} bamtobed -i {input} | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000 -c 5 -o mean -i - > {output}"
 
 rule merge_KNR_intervals:
