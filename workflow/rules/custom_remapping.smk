@@ -12,8 +12,6 @@ rule:
     shell: "python3 workflow/scripts/refine/extract_polyA_rich_reads.py -i {input} -o {output}"
 
 for donor, donor_config in config['custom_references'].items():
-
-
     TAG = "BC"
     rule:
         name: "make_bed_file_{}".format(donor)
@@ -45,7 +43,6 @@ for donor, donor_config in config['custom_references'].items():
         input: "results/custom_references/{prefix}.fa".format(prefix = donor)
         output: "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
         shell: "{config[bwa]} index {input}"
-print(config['cbc_to_donor'])
 rule:
     name: "bwa_mem"
     input:
