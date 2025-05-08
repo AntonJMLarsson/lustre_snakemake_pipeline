@@ -30,7 +30,7 @@ rule sort_KR:
     input:
         "results/KR_bam_unsorted/{cell}.bam"
     output:
-        "results/KR_bam/{cell}.bam"
+        temp("results/KR_bam/{cell}.bam")
     shell:
         "{config[samtools]} sort -o {output} {input}"
 

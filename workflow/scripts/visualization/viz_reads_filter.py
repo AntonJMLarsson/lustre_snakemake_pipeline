@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 
-def make_plot(file, group):
-    outname = file.split('/')[-1].split('.')[0]
+def make_plot(file, group, prefix):
 
     df = pd.read_csv(file, index_col=0)
 
@@ -59,17 +58,18 @@ def make_plot(file, group):
             g2.set(xlabel='Distance from continuation')
             g3.set(xticklabels=['Pass primer', 'Pass continue', 'Pass total'])
     plt.tight_layout()
-    plt.savefig('{}_passing_reads_plot.pdf'.format(outname))
+    plt.savefig('{}_passing_reads_plot.pdf'.format(prefix))
     plt.show()
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze split reads', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-i','--input', metavar='input', type=str, help='Input .csv file')
     parser.add_argument('-g', '--group', type=str, default=None, help='group')
+    parser.add_argument('-p','--prefix', metavar='output', type=str, help='Output prefix')
 
     args = parser.parse_args()
 
-    make_plot(args.input, args.group)
+    make_plot(args.input, args.group, args.prefix)
 
 if __name__ == '__main__':
     main()
