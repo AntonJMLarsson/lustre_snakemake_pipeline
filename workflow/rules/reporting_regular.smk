@@ -26,4 +26,7 @@ rule count_cell_detection_KNR:
     output: touch("results/KNR_regular.done") 
     shell: "python3 workflow/scripts/count_cell_detection.py -bam {input.bam} -stats {input.stats} -sample {config[samplesheet]} -p results/regular_stats/{config[project]}_KNR -ct BC -t 50"
 
-
+rule count_cell_detection_KR:
+    input: bam =  "results/KR_merged.sorted.bam"
+    output: touch("results/KR.done") 
+    shell: "python3 workflow/scripts/count_cell_detection.py -bam {input.bam} -ins {config[KR]} -sample {config[samplesheet]} -p results/regular_stats/{config[project]}_KR -ct BC -t 50"

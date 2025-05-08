@@ -53,7 +53,21 @@ rule sort_discond_bam_KNR:
     output: "results/KNR_discond_merged.sorted.bam"
     threads: config["threads"]
     shell:"""
-        {config[samtools]} sort -@ {threads} -m 2G -o {output} {input}
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
+        {config[samtools]} index -@ {threads} {output}
+        """
+
+rule concat_bam_KR:
+    input: lambda wildcards: expand("results/KR_bam/{cell}", cell=get_cells(wildcards))
+    output: temp("results/KR_merged.bam")
+    shell: "{config[samtools]} cat -o {output} results/KR_bam/*.bam"
+
+rule sort_bam_KR:
+    input: "results/KR_merged.bam"
+    output: "results/KR_merged.sorted.bam"
+    threads: config["threads"]
+    shell:"""
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
         {config[samtools]} index -@ {threads} {output}
         """
 
