@@ -45,26 +45,26 @@ rule remove_concordant_KNR:
         "python3 workflow/scripts/preprocessing/remove_concordant.py -i {input} -o1 {output.discon} -o2 {output.concord}"
 
 rule sort_KNR:
-    input: "results/KNR_bam_filtered/{cell}"
-    output: "results/KNR_bam/{cell}"
+    input: "results/KNR_bam_filtered/{cell}.bam"
+    output: "results/KNR_bam/{cell}.bam"
     shell: "{config[samtools]} sort -o {output} {input}"
 
 rule filter_KR:
-    input: "results/mapped_qname_r1/{cell}"
-    output: temp("results/KR_filter/{cell}")
+    input: "results/mapped_qname_r1/{cell}.bam"
+    output: temp("results/KR_filter/{cell}.bam")
     shell: "{config[bedtools]} window -v -w 10000 -b {config[KR_file]} -abam {input} > {output}"
 
 rule filter_KNR:
-    input: "results/KR_filter/{cell}"
-    output: temp("results/KNR_filter/{cell}")
+    input: "results/KR_filter/{cell}.bam"
+    output: temp("results/KNR_filter/{cell}.bam")
     shell: "{config[bedtools]} window -v -w 10000 -b {config[KNR_file]} -abam {input} > {output}"
         
 rule remove_concordant_UNK:
-    input: "results/KNR_filter/{cell}"
-    output: discon = temp("results/UNK_bam_unsorted/{cell}"), concord = "results/UNK_bam_concord/{cell}"
+    input: "results/KNR_filter/{cell}.bam"
+    output: discon = temp("results/UNK_bam_unsorted/{cell}.bam"), concord = "results/UNK_bam_concord/{cell}.bam"
     shell: "python3 workflow/scripts/preprocessing/remove_concordant.py -i {input} -o1 {output.discon} -o2 {output.concord}"
         
 rule sort_UNK:
-    input: "results/UNK_bam_unsorted/{cell}"
-    output: "results/UNK_bam/{cell}"
+    input: "results/UNK_bam_unsorted/{cell}.bam"
+    output: "results/UNK_bam/{cell}.bam"
     shell:  "{config[samtools]} sort -o {output} {input}"

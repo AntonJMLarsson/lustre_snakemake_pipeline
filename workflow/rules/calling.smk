@@ -9,19 +9,20 @@ rule get_concord_intervals_UNK:
     shell: "{config[bedtools]} bamtobed -i {input} | sort -k1,1 -k2,2n | {config[bedtools]} merge -c 5 -o mean -i - > {output}"
 
 rule merge_concord_intervals_KNR:
-    input: lambda wildcards:expand("results/KNR_concord_bed/{cell}".replace('.bam', '.bed'), cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/KNR_concord_bed/{cell}.bed", cell=get_cells(wildcards))
     output:"results/KNR_concord_merged.bed"
     shell: "cat results/KNR_concord_bed/*.bed | sort -k1,1 -k2,2n | {config[bedtools]} merge -c 4 -o mean -i - > {output}"
 
 rule merge_concord_intervals_UNK:
-    input: lambda wildcards:expand("results/UNK_concord_bed/{cell}".replace('.bam', '.bed'), cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/UNK_concord_bed/{cell}.bed", cell=get_cells(wildcards))
     output: "results/UNK_concord_merged.bed"
     shell: "cat results/UNK_concord_bed/*.bed | sort -k1,1 -k2,2n | {config[bedtools]} merge -c 4 -o mean -i - > {output}"
 
 rule concat_concord_bam_KNR:
-    input: lambda wildcards:expand("results/KNR_bam_concord/{cell}", cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/KNR_bam_concord/{cell}.bam", cell=get_cells(wildcards))
     output: "results/KNR_concord_merged.bam"
     shell: "{config[samtools]} cat -o {output} results/KNR_bam_concord/*.bam"
+
 rule sort_concord_bam_KNR:
     input: "results/KNR_concord_merged.bam"
     output: "results/KNR_concord_merged.sorted.bam"
@@ -32,7 +33,7 @@ rule sort_concord_bam_KNR:
         """ 
 
 rule concat_concord_bam_UNK:
-    input: lambda wildcards:expand("results/UNK_bam_concord/{cell}", cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/UNK_bam_concord/{cell}.bam", cell=get_cells(wildcards))
     output: "results/UNK_concord_merged.bam"
     shell: "{config[samtools]} cat -o {output} results/UNK_bam_concord/*.bam"
 rule sort_concord_bam_UNK:
@@ -45,7 +46,7 @@ rule sort_concord_bam_UNK:
         """
 
 rule concat_discond_bam_KNR:
-    input: lambda wildcards:expand("results/KNR_bam/{cell}", cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/KNR_bam/{cell}.bam", cell=get_cells(wildcards))
     output: "results/KNR_discond_merged.bam"
     shell: "{config[samtools]} cat -o {output} results/KNR_bam/*.bam"
 rule sort_discond_bam_KNR:
@@ -58,7 +59,7 @@ rule sort_discond_bam_KNR:
         """
 
 rule concat_bam_KR:
-    input: lambda wildcards: expand("results/KR_bam/{cell}", cell=get_cells(wildcards))
+    input: lambda wildcards: expand("results/KR_bam/{cell}.bam", cell=get_cells(wildcards))
     output: temp("results/KR_merged.bam")
     shell: "{config[samtools]} cat -o {output} results/KR_bam/*.bam"
 
@@ -72,7 +73,7 @@ rule sort_bam_KR:
         """
 
 rule concat_discond_bam_UNK:
-    input: lambda wildcards:expand("results/UNK_bam/{cell}", cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/UNK_bam/{cell}.bam", cell=get_cells(wildcards))
     output: "results/UNK_discond_merged.bam"
     shell: "{config[samtools]} cat -o {output} results/UNK_bam/*.bam"
 rule sort_discond_bam_UNK:
@@ -125,12 +126,12 @@ rule get_UNK_intervals:
     shell: "{config[bedtools]} bamtobed -i {input} | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000 -c 5 -o mean -i - > {output}"
 
 rule merge_KNR_intervals:
-    input: lambda wildcards:expand("results/KNR_intervals_bed/{cell}".replace('.bam', '.bed'), cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/KNR_intervals_bed/{cell}.bed", cell=get_cells(wildcards))
     output: "results/KNR_intervals_merged.bed"
     shell: "cat results/KNR_intervals_bed/*.bed | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000 -c 1,4 -o count,mean -i - > {output}"
         
 rule merge_UNK_intervals:
-    input: lambda wildcards:expand("results/UNK_intervals_bed/{cell}".replace('.bam', '.bed'), cell=get_cells(wildcards))
+    input: lambda wildcards:expand("results/UNK_intervals_bed/{cell}.bed", cell=get_cells(wildcards))
     output: "results/UNK_intervals_merged.bed"
     shell: "cat results/UNK_intervals_bed/*.bed | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000 -c 1,4 -o count,mean -i - > {output}"
 
