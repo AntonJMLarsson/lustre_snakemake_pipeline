@@ -3,7 +3,7 @@
 rule filter_bam:
     input: bam = "results/mapped_qname/{cell}"
     output:
-        bam = temp("results/mapped_qname_filtered/{cell}"),
+        bam = temp("results/mapped_qname_filtered/{cell}.bam"),
         report = "results/filter_stats/{cell}".replace("'.bam", ".csv")
     params:
         cell = lambda w: w.cell
