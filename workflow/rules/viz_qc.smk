@@ -12,7 +12,7 @@ rule summarize_filtering_stats:
     input: lambda wildcards: expand("results/filter_stats/{cell}.csv", cell=get_cells(wildcards))
     output: "results/{project}_stats_filter.csv".format(project=config["project"])
     params: folder = "results/filter_stats/"
-    shell: "mkdir -p results/plots && python3 workflow/scripts/visualization/summarize_filtering_stats.py -f {params.folder} -s {config[samplesheet]} -o {output}"
+    shell: "mkdir -p results/plots && python3 workflow/scripts/summarize_filtering_stats.py -f {params.folder} -s {config[samplesheet]} -o {output}"
 
 rule viz_reads_filter:
     input: "results/{project}_stats_filter.csv".format(project=config["project"])
