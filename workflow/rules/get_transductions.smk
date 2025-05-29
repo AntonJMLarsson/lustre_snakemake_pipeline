@@ -33,7 +33,7 @@ rule sort:
     input: "results/Transduction_reads.bam"
     output:  "results/Transduction_reads.sorted.bam"
     threads: 30
-    shell: "samtools sort -t {threads} -m 2G -o {output} {input}"
+    shell: "samtools sort -t {threads} -m 1G -o {output} {input}"
 rule index:
     input: "results/Transduction_reads.sorted.bam"
     output: "results/Transduction_reads.sorted.bam.bai"
