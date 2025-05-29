@@ -56,7 +56,7 @@ def main():
     parser.add_argument('-p','--prefix', metavar='prefix', type=str, help='prefix')
     parser.add_argument('-ct','--tag', metavar='tag', type=str, help='cell tag')
     parser.add_argument('-t','--threads', metavar='threads', type=int, help='threads')
-    parser.add_argument('-o','--output', metavar='output', type=int, help='output')
+    parser.add_argument('-o','--output', metavar='output', type=str, help='output')
     args = parser.parse_args()
 
     bamfile = args.bam_input
