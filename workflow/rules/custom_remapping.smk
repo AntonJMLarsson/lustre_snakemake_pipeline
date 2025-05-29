@@ -1,8 +1,6 @@
 def get_cells_donor(wildcards, l, donor):
         checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
-        print(checkpoint_output)
         res = [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam") and f.split('.')[0] in l]
-        print(donor, len(res))
         return res
 
 rule:
@@ -45,7 +43,6 @@ for donor, donor_config in config['custom_references'].items():
         input: "results/custom_references/{prefix}.fa".format(prefix = donor)
         output: "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
         shell: "{config[bwa]} index {input}"
-print(config['cbc_to_donor'])
 rule:
     name: "bwa_mem"
     input:
