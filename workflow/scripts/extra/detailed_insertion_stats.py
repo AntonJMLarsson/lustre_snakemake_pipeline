@@ -56,6 +56,7 @@ def main():
     parser.add_argument('-p','--prefix', metavar='prefix', type=str, help='prefix')
     parser.add_argument('-ct','--tag', metavar='tag', type=str, help='cell tag')
     parser.add_argument('-t','--threads', metavar='threads', type=int, help='threads')
+    parser.add_argument('-o','--output', metavar='output', type=int, help='output')
     args = parser.parse_args()
 
     bamfile = args.bam_input
@@ -71,9 +72,10 @@ def main():
     stats_df = pd.read_csv(stats_file, index_col=0)
 
     res = Parallel(n_jobs=threads, verbose = 3, backend='loky')(delayed(count_tag_sites_and_read_depth)(bamfile, bamfile_polyA, cell_BC_set, idx, row, tag) for idx, row in stats_df.iterrows())
-    cell_counter_dict_total = {idx: cell_counter_dict for idx, cell_counter_dict in res}
-    read_depth_df, tag_site_df = make_tables(cell_counter_dict_total,cell_BC_set)
-    make_stats_per_donor(samplesheet, stats_df, read_depth_df, tag_site_df, prefix)
+    
+    res_df = pd.DataFrame(res, columns=['cell', 'insertion', 'tag_site', 'count'])
+
+    res_df.to_csv(args.output)
 
 if __name__ == '__main__':
     main()
