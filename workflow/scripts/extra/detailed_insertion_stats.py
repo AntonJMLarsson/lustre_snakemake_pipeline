@@ -49,7 +49,7 @@ def count_tag_sites_and_read_depth(bamfile, bamfile_polyA, cell_BC_set, idx, row
 def main():
     parser = argparse.ArgumentParser(description='Count cell detection', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-bam','--bam_input',metavar='input', type=str, help='Input discordant .bam file')
-    parser.add_argument('-bam-polyA', '--bam_input_polyA',  metavar='polyA_input', type='str', help='Remapped .bam file')
+    parser.add_argument('-bam-polyA', '--bam_input_polyA',  metavar='polyA_input', type=str, help='Remapped .bam file')
     parser.add_argument('-stats','--stats', metavar='stats', type=str, help='Input stats file')
     parser.add_argument('-sample','--samplesheet', metavar='samplesheet', type=str, help='Samplesheet file')
     parser.add_argument('-d','--donor', metavar='donor', type=str, help='Donor')
