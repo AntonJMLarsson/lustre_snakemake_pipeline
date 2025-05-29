@@ -16,7 +16,7 @@ def transform_reads(bamfile_in, header_bam, bamfile_out):
     bam_in = pysam.AlignmentFile(bamfile_in,'rb')
     bam_h = pysam.AlignmentFile(header_bam,'rb')
     bam_out = pysam.AlignmentFile(bamfile_out, 'wb',template=bam_h)
-    cell = bamfile_in.split('/')[-1].split('_')[0]
+    cell = bamfile_in.split('/')[-1].split('_')[0].split('.')[0]
 
     for read in bam_in.fetch(until_eof=True):
         read_dict = read.to_dict()
