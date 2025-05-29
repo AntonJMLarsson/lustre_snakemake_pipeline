@@ -27,7 +27,7 @@ def count_tag_sites_and_read_depth(bamfile, bamfile_polyA, cell_BC_set, idx, row
         cell = read.get_tag(tag)
         if cell not in tag_sites_per_cell_counter and cell in cell_BC_set:
             tag_sites_per_cell_counter[cell] = Counter()
-        if read.mapping_quality > 0 and not read.is_supplementary and not read_is_softclip(read):
+        if read.mapping_quality > 0 and not read.is_supplementary and not read_is_softclip(read) and cell in cell_BC_set:
             tag_sites_per_cell_counter[cell].update({get_tag_site(read): 1})
     bam.close()
 
@@ -36,7 +36,7 @@ def count_tag_sites_and_read_depth(bamfile, bamfile_polyA, cell_BC_set, idx, row
         cell = read.get_tag(tag)
         if cell not in tag_sites_per_cell_counter and cell in cell_BC_set:
             tag_sites_per_cell_counter[cell] = Counter()
-        if read.mapping_quality > 0 and not read.is_supplementary and not read_is_softclip(read):
+        if read.mapping_quality > 0 and not read.is_supplementary and not read_is_softclip(read) and cell in cell_BC_set:
             tag_sites_per_cell_counter[cell].update({get_tag_site(read): 1})
     bam.close()
 
