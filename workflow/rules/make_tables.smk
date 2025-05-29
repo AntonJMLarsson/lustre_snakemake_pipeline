@@ -23,4 +23,4 @@ for donor in config["custom_references"].keys():
         output: "results/detailed_stats/detailed_insertion_stats_UNK_{}.csv".format(donor)
         params: donor = donor
         threads: config["threads"]
-        shell: "python3 workflow/scripts/extra/detailed_insertion_stats.py -bam {input.bam} -bam-polyA {input.bam_polyA} --stats {input.inesrtion_table} --samplesheet {config[samplesheet]} --donor {params.donor} -p {config[project]} --tag BC --threads {threads} --output {output}"
+        shell: "python3 workflow/scripts/extra/detailed_insertion_stats.py -bam {input.bam} -bam-polyA {input.bam_polyA} --stats {input.insertion_table} --samplesheet {config[samplesheet]} --donor {params.donor} -p {config[project]} --tag BC --threads {threads} --output {output}"
