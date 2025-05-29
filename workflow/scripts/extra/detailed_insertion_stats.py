@@ -72,6 +72,8 @@ def main():
     stats_df = pd.read_csv(stats_file, index_col=0)
 
     res = Parallel(n_jobs=threads, verbose = 3, backend='loky')(delayed(count_tag_sites_and_read_depth)(bamfile, bamfile_polyA, cell_BC_set, idx, row, tag) for idx, row in stats_df.iterrows())
+
+    res = [r for sublist in res for r in sublist]
     
     res_df = pd.DataFrame(res, columns=['cell', 'insertion', 'tag_site', 'count'])
 
