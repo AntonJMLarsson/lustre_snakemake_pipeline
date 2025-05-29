@@ -25,9 +25,12 @@ def transform_reads(bamfile_in, header_bam, bamfile_out):
         read_dict['ref_pos'] = str(tup[1]+1)
         if tup[0] is None:
             print('Unmapped')
-        read = pysam.AlignedSegment.from_dict(read_dict, bam_out.header)
-        read.set_tag('BC', cell)
-        bam_out.write(read)
+        try:
+            read = pysam.AlignedSegment.from_dict(read_dict, bam_out.header)
+            read.set_tag('BC', cell)
+            bam_out.write(read)
+        except:
+            continue
 
     bam_in.close()
     bam_out.close()
