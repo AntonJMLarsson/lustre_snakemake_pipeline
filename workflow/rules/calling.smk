@@ -27,7 +27,7 @@ rule sort_concord_bam_KNR:
     output: "results/KNR_concord_merged.sorted.bam"
     threads: config["threads"]
     shell:"""
-        {config[samtools]} sort -@ {threads} -m 2G -o {output} {input}
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
         {config[samtools]} index -@ {threads} {output}
         """ 
 
@@ -40,7 +40,7 @@ rule sort_concord_bam_UNK:
     output: "results/UNK_concord_merged.sorted.bam"
     threads: config["threads"]
     shell:"""
-        {config[samtools]} sort -@ {threads} -m 2G -o {output} {input}
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
         {config[samtools]} index -@ {threads} {output}
         """
 
@@ -54,7 +54,7 @@ rule sort_bam_KR:
     output: "results/KR_merged.sorted.bam"
     threads: config["threads"]
     shell:"""
-        {config[samtools]} sort -@ {threads} -m 2G -o {output} {input}
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
         {config[samtools]} index -@ {threads} {output}
         """
 
@@ -67,7 +67,7 @@ rule sort_discond_bam_KNR:
     output: "results/KNR_discond_merged.sorted.bam"
     threads: config["threads"]
     shell:"""
-        {config[samtools]} sort -@ {threads} -m 2G -o {output} {input}
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
         {config[samtools]} index -@ {threads} {output}
         """
 
@@ -80,7 +80,7 @@ rule sort_discond_bam_UNK:
     output: "results/UNK_discond_merged.sorted.bam"
     threads: config["threads"]
     shell:"""
-        {config[samtools]} sort -@ {threads} -m 2G -o {output} {input}
+        {config[samtools]} sort -@ {threads} -m 1G -o {output} {input}
         {config[samtools]} index -@ {threads} {output}
         """
 
