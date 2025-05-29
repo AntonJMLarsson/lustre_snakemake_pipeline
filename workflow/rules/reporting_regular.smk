@@ -29,7 +29,8 @@ rule count_cell_detection_KNR:
 rule count_cell_detection_KR:
     input: bam =  "results/KR_merged.sorted.bam"
     output: touch("results/KR_regular.done") 
-    shell: "python3 workflow/scripts/count_cell_detection.py -bam {input.bam} -ins {config[KR_file]} -sample {config[samplesheet]} -p results/regular_stats/{config[project]}_KR -ct BC -t 50"
+    threads: config["threads"]
+    shell: "python3 workflow/scripts/extra/count_KR_insertions.py -bam {input.bam} -ins {config[KR_file]} -sample {config[samplesheet]} -p results/regular_stats/{config[project]}_KR -ct BC -t {threads}"
 
 
 
