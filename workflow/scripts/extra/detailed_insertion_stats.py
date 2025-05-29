@@ -73,7 +73,7 @@ def main():
 
     res = Parallel(n_jobs=threads, verbose = 3, backend='loky')(delayed(count_tag_sites_and_read_depth)(bamfile, bamfile_polyA, cell_BC_set, idx, row, tag) for idx, row in stats_df.iterrows())
     
-    res_df = pd.DataFrame(res, columns=['cell', 'insertion', 'tag_site', 'count'])
+    res_df = pd.DataFrame(res, index=['cell', 'insertion', 'tag_site', 'count']).T
 
     res_df.to_csv(args.output)
 
