@@ -3,7 +3,7 @@ import argparse
 def convert_custom_coordinates(read):
     ref_name = read.reference_name
     if ref_name is None:
-        return (None, -2, 0)
+        return (None, -1, 0)
     ref_name_list = ref_name.split('_')
 
     if len(ref_name_list) == 3:

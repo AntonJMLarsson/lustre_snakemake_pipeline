@@ -22,6 +22,7 @@ rule concat_concord_bam_KNR:
     input: lambda wildcards:expand("results/KNR_bam_concord/{cell}.bam", cell=get_cells(wildcards))
     output: "results/KNR_concord_merged.bam"
     shell: "{config[samtools]} cat -o {output} results/KNR_bam_concord/*.bam"
+
 rule sort_concord_bam_KNR:
     input: "results/KNR_concord_merged.bam"
     output: "results/KNR_concord_merged.sorted.bam"
@@ -116,12 +117,12 @@ rule remove_supplemental_UNK:
 
 rule get_KNR_intervals:
     input: "results/KNR_bam_concord_filtered_no_supp/{cell}.bam"
-    output: "results/KNR_intervals_bed/{cell}.bed"
+    output: "results/KNR_intervals_bed/{cell}".replace('.bam', '.bed')
     shell: "{config[bedtools]} bamtobed -i {input} | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000  -c 5 -o mean -i - > {output}"
 
 rule get_UNK_intervals:
     input: "results/UNK_bam_concord_filtered_no_supp/{cell}.bam"
-    output: "results/UNK_intervals_bed/{cell}.bed"
+    output: "results/UNK_intervals_bed/{cell}".replace('.bam', '.bed')
     shell: "{config[bedtools]} bamtobed -i {input} | sort -k1,1 -k2,2n | {config[bedtools]} merge -d 1000 -c 5 -o mean -i - > {output}"
 
 rule merge_KNR_intervals:

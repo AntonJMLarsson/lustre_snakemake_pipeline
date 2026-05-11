@@ -19,6 +19,7 @@ def extract_polyA_rich_reads(bamfile, file_out_read1):
     bam = pysam.AlignmentFile(bamfile,'rb')
     fraction_As_list = []
     softclip_len_list = []
+    f_1.write(format_tuple(('dummy', 'AAA', 'AAA')))
     for read in bam.fetch(until_eof=True):
         if read.is_supplementary or read.is_unmapped:
             continue

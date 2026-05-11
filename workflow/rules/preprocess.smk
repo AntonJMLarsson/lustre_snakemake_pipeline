@@ -1,7 +1,7 @@
 
 
 rule filter_bam:
-    input: bam = "results/mapped_qname/{cell}.bam"
+    input: bam = "results/mapped_qname/{cell}"
     output:
         bam = temp("results/mapped_qname_filtered/{cell}.bam"),
         report = "results/filter_stats/{cell}.csv"
@@ -19,8 +19,7 @@ rule split_files:
         "python3 workflow/scripts/preprocessing/split_into_read1_and_read2.py -i {input} -r1 {output.r1} -r2 {output.r2}"
 
 rule get_KR:
-    input:
-        "results/mapped_qname_r1/{cell}.bam"
+    input: "results/mapped_qname_r1/{cell}.bam"
     output:
         temp("results/KR_bam_unsorted/{cell}.bam")
     shell:
@@ -35,10 +34,8 @@ rule sort_KR:
         "{config[samtools]} sort -o {output} {input}"
 
 rule get_KNR:
-    input:
-        "results/mapped_qname_r1/{cell}.bam"
-    output:
-        temp("results/KNR_bam_unsorted/{cell}.bam")
+    input: "results/mapped_qname_r1/{cell}.bam"
+    output: temp("results/KNR_bam_unsorted/{cell}.bam")
     shell:
         "{config[bedtools]} window -u -w 10000 -b {config[KNR_file]} -abam {input} > {output}"
 
