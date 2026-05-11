@@ -17,4 +17,4 @@ rule summarize_filtering_stats:
 rule viz_reads_filter:
     input: "results/{project}_stats_filter.csv".format(project=config["project"])
     output: touch("results/viz_filtering.done")
-    shell: "mkdir -p results/plots && python3 workflow/scripts/visualization/viz_reads_filter.py -i {input} -g Sample -p results/plots/{config[project]}_filtering"
+    shell: "mkdir -p results/plots && python3 workflow/scripts/visualization/viz_reads_filter.py -i {input} -g Donor -p results/plots/{config[project]}_filtering"

@@ -1,0 +1,37 @@
+# Demo config for the LUSTRE snakemake pipeline.
+# Fill in fasta_file and tool paths before running.
+
+project: demo
+
+samplesheet: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/demo/samplesheet.csv
+expected_barcodes: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/demo/expected_barcodes.txt
+
+# Path to hg38 reference genome FASTA (must be BWA-indexed)
+fasta_file: /path/to/hg38.fna   # UPDATE THIS
+
+KNR_file: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/resources/nonref.collection.hg38.chr.L1.bed
+old_KNR_file: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/resources/KNR_chr.bed
+KR_file: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/resources/KR_chr.bed
+KNR_remap: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/resources/nonref.collection.hg38.chr.L1.bed
+KR_remap: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/resources/KR_chr.bed
+
+r1: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/demo/demo_R1.fq.gz
+r2: /Users/antonlarsson/Documents/Structure/Areas/Line_Genomics/Reference/Code/lustre_snakemake_pipeline/demo/demo_R2.fq.gz
+
+threads: 4   # Adjust to available cores
+
+samtools: samtools
+bedtools: bedtools
+bwa: bwa-mem2            # or full path to bwa-mem2 binary
+fastp: fastp
+demultiplex_fastq:       # not needed for this demo
+split_barcoded_bam: /path/to/split_barcoded_bam  # UPDATE THIS
+
+# Simulated somatic insertion: chr2:100,000,000 (present in DONOR_A cells)
+custom_references:
+  DONOR_A:
+    file_list: ['results/regular_stats/demo_UNK_DONOR_A_stats.csv']
+    cell_file: ['config/DONOR_A_cells.txt']
+  DONOR_B:
+    file_list: ['results/regular_stats/demo_UNK_DONOR_B_stats.csv']
+    cell_file: ['config/DONOR_B_cells.txt']

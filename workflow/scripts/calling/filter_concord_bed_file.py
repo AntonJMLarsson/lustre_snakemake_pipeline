@@ -7,8 +7,11 @@ def read_is_not_supplementary_concord(read):
     return not read.is_supplementary and read.is_proper_pair
 
 def filter_file(bed_input, bamfile_concord, bamfile_discord, bed_output):
-    df_bed = pd.read_csv(bed_input, sep='\t', header=None)
-    df_bed.columns = ['chrom', 'start', 'end', 'mean_mapq']
+    df_bed = pd.read_csv(bed_input, sep='\t', header=None,
+                         names=['chrom', 'start', 'end', 'mean_mapq'])
+    if df_bed.empty:
+        open(bed_output, 'w').close()
+        return None
     bam_concord = pysam.AlignmentFile(bamfile_concord, 'rb')
     bam_discord = pysam.AlignmentFile(bamfile_discord, 'rb')
     

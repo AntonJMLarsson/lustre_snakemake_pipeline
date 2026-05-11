@@ -8,7 +8,8 @@ def get_seq(contig, start, end, fasta_ref):
 def make_fasta(bed_file, fasta_file, out_file):
 
     fasta_ref = Fasta(fasta_file)
-    df = pd.read_csv(bed_file, sep='\t', comment='t', header=None, index_col=None).dropna()
+    df = pd.read_csv(bed_file, sep='\t', header=None, index_col=None,
+                     names=range(10), engine='python', on_bad_lines='skip').dropna(subset=[0, 1, 2])
     with open(out_file, 'w') as f_ref:
         for i, row in df.iterrows():
             if row[0] not in fasta_ref:

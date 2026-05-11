@@ -69,9 +69,12 @@ def apply_filtering_steps(regular_stats, remapped_stats, read_matrix, read_matri
 
     full_df_discarded = full_df[~full_df['pass']]
 
-    full_df_filtered_1_tag_site = full_df_filtered[(full_df_filtered['n_tag_sites'] == 1)][full_df_filtered[full_df_filtered['n_tag_sites'] == 1].apply(lambda row: any_split_reads(row), axis=1)]
-    full_df_conservative = full_df_filtered[full_df_filtered['n_tag_sites'] > 1][full_df_filtered[full_df_filtered['n_tag_sites'] > 1].apply(lambda row: any_split_reads(row), axis=1)]
-    full_df_conservative = full_df_conservative[full_df_conservative['total_read_depth']/full_df_conservative['total_reads'] > 0.2]
+    _1ts = full_df_filtered[full_df_filtered['n_tag_sites'] == 1]
+    full_df_filtered_1_tag_site = _1ts[_1ts.apply(lambda row: any_split_reads(row), axis=1)] if not _1ts.empty else _1ts
+    _cons = full_df_filtered[full_df_filtered['n_tag_sites'] > 1]
+    full_df_conservative = _cons[_cons.apply(lambda row: any_split_reads(row), axis=1)] if not _cons.empty else _cons
+    if not full_df_conservative.empty:
+        full_df_conservative = full_df_conservative[full_df_conservative['total_read_depth']/full_df_conservative['total_reads'] > 0.2]
     full_df_both = pd.concat([full_df_conservative, full_df_filtered_1_tag_site])
 
     read_mat_both = read_mat + read_mat_remapped
