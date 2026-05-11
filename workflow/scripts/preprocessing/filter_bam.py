@@ -29,7 +29,8 @@ def filter_bam(bamfile, outbam, report, sample):
                         bam_out.write(quality_read)
                 else:
                     n_fail += 1
-            else:
+            elif prev_qname != '':
+                # Only count as fail if we actually saw a real group (not the initial empty state).
                 n_fail += 1
             read_list = []
             read2_stats = {}

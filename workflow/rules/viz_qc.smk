@@ -1,24 +1,20 @@
-configfile: "config.yaml"
-
-rule all:
-    input: split_reads_UNK = "viz_split_reads_UNK.done", split_reads_KNR = "viz_split_reads_KNR.done", filtering = "viz_filtering.done"
-
 rule viz_split_reads_analysis_UNK:
-    input: "UNK_split_report.csv"
-    output: touch("viz_split_reads_UNK.done")
-    shell: "python3 workflow/scripts/visualization/viz_split_reads_analysis.py -i {input} -p {config[project]}_UNK"
+    input: "results/UNK_split_report.csv"
+    output: touch("results/viz_split_reads_UNK.done")
+    shell: "mkdir -p results/plots && python3 workflow/scripts/visualization/viz_split_reads_analysis.py -i {input} -p results/plots/{config[project]}_UNK"
 
 rule viz_split_reads_analysis_KNR:
-    input: "KNR_split_report.csv"
-    output: touch("viz_split_reads_KNR.done")
-    shell: "python3 workflow/scripts/visualization/viz_split_reads_analysis.py -i {input} -p {config[project]}_KNR"
+    input: "results/KNR_split_report.csv"
+    output: touch("results/viz_split_reads_KNR.done")
+    shell: "mkdir -p results/plots && python3 workflow/scripts/visualization/viz_split_reads_analysis.py -i {input} -p results/plots/{config[project]}_KNR"
 
 rule summarize_filtering_stats:
-    input: "filter_stats/"
-    output: "{project}_stats_filter.csv".format(project=config["project"])
-    shell: "python3 workflow/scripts/summarize_filtering_stats.py -f {input} -s {config[samplesheet]} -o {output}"
+    input: lambda wildcards: expand("results/filter_stats/{cell}.csv", cell=get_cells(wildcards))
+    output: "results/{project}_stats_filter.csv".format(project=config["project"])
+    params: folder = "results/filter_stats/"
+    shell: "mkdir -p results/plots && python3 workflow/scripts/summarize_filtering_stats.py -f {params.folder} -s {config[samplesheet]} -o {output}"
 
 rule viz_reads_filter:
-    input: "{project}_stats_filter.csv".format(project=config["project"])
-    output: touch("viz_filtering.done")
-    shell: "python3 workflow/scripts/visualization/viz_reads_filter.py -i {input} -g Sample"
+    input: "results/{project}_stats_filter.csv".format(project=config["project"])
+    output: touch("results/viz_filtering.done")
+    shell: "mkdir -p results/plots && python3 workflow/scripts/visualization/viz_reads_filter.py -i {input} -g Donor -p results/plots/{config[project]}_filtering"

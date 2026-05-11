@@ -26,9 +26,12 @@ rule get_KR:
         "{config[bedtools]} window -u -w 10000 -b {config[KR_file]} -abam {input} > {output}"
 
 rule sort_KR:
-    input: "results/KR_bam_unsorted/{cell}.bam"
-    output: "results/KR_bam/{cell}"
-    shell: "{config[samtools]} sort -o {output} {input}"
+    input:
+        "results/KR_bam_unsorted/{cell}.bam"
+    output:
+        temp("results/KR_bam/{cell}.bam")
+    shell:
+        "{config[samtools]} sort -o {output} {input}"
 
 rule get_KNR:
     input: "results/mapped_qname_r1/{cell}.bam"

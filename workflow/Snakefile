@@ -21,6 +21,7 @@ include: "rules/reporting_regular.smk"
 include: "rules/custom_remapping.smk"
 include: "rules/reporting_remapped.smk"
 include: "rules/make_tables.smk"
+include: "rules/viz_qc.smk"
 include: "rules/common.smk"
 
 

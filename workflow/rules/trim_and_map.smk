@@ -15,7 +15,7 @@ rule bwa_mem:
     input: r1 = "results/fastq_files_trimmed/{project}_read_1.fq.gz".format(project=config["project"]), r2 = "results/fastq_files_trimmed/{project}_read_2.fq.gz".format(project=config["project"])
     output: temp("results/mapped/{project}.bam".format(project=config["project"]))
     log: "logs/bwa_mem/{project}.log".format(project=config["project"])
-    params: index=REF, extra="-R '@RG\tID:{project}\tSM:{project}'".format(project=config["project"]), bwa = int(3*(config["threads"]/4)), samtools = int(config["threads"]/4)
+    params: index=REF, extra=r"-R '@RG\tID:{project}\tSM:{project}'".format(project=config["project"]), bwa = int(3*(config["threads"]/4)), samtools = int(config["threads"]/4)
     threads: config["threads"]
     shell: "{config[bwa]} mem -t {params.bwa} {params.extra} {params.index} {input.r1} {input.r2} | samtools view -@ {params.samtools} -bS -  > {output}" 
     
@@ -35,5 +35,4 @@ checkpoint demx:
 
 def get_cells(wildcards):
     checkpoint_output = checkpoints.demx.get(**wildcards).output[0]
-    print(checkpoint_output)
     return [f.replace(".bam", "") for f in os.listdir(checkpoint_output) if f.endswith(".bam")]

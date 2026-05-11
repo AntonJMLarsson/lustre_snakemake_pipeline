@@ -4,18 +4,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 
-def make_plot(file, group):
-    outname = file.split('/')[-1].split('.')[0]
+def make_plot(file, group, prefix):
 
     df = pd.read_csv(file, index_col=0)
 
-    primer_columns = ['primer_distance_{}'.format(i) for i in range(24)]
-    continue_columns = ['continue_distance_{}'.format(i) for i in range(9)]
+    primer_columns = [c for c in ['primer_distance_{}'.format(i) for i in range(24)] if c in df.columns]
+    continue_columns = [c for c in ['continue_distance_{}'.format(i) for i in range(9)] if c in df.columns]
 
-    pass_primer = df[['primer_distance_{}'.format(i) for i in range(7)]].sum(axis=1)
+    pass_primer_cols = [c for c in ['primer_distance_{}'.format(i) for i in range(7)] if c in df.columns]
+    pass_primer = df[pass_primer_cols].sum(axis=1)
     pass_primer.name = 'pass_primer'
 
-    pass_continue = df[['continue_distance_{}'.format(i) for i in range(2)]].sum(axis=1)
+    pass_continue_cols = [c for c in ['continue_distance_{}'.format(i) for i in range(2)] if c in df.columns]
+    pass_continue = df[pass_continue_cols].sum(axis=1)
     pass_continue.name = 'pass_continue'
 
     df = df.join(pass_primer)
@@ -36,7 +37,7 @@ def make_plot(file, group):
     primer_df_norm = primer_df.div(primer_df.sum(axis=1), axis=0)
     n_groups = primer_df_norm.join(df[group]).groupby(group).count().shape[0]
     fig, axes = plt.subplots(n_groups,3, figsize=(16,2*n_groups), sharey=True, squeeze=False)
-    fraction_pass_primer = primer_df_norm[['primer_distance_{}'.format(i) for i in range(7)]].sum(axis=1)
+    fraction_pass_primer = primer_df_norm[[c for c in ['primer_distance_{}'.format(i) for i in range(7)] if c in primer_df_norm.columns]].sum(axis=1)
     i = 0
     for s, df_subset in primer_df_norm.join(df[group]).groupby(group):
         g1 = sns.boxplot(data=df_subset.drop(group, axis=1), ax=axes[i][0], showfliers=False, **{'boxprops':{'facecolor':'none'}})
@@ -59,17 +60,18 @@ def make_plot(file, group):
             g2.set(xlabel='Distance from continuation')
             g3.set(xticklabels=['Pass primer', 'Pass continue', 'Pass total'])
     plt.tight_layout()
-    plt.savefig('{}_passing_reads_plot.pdf'.format(outname))
+    plt.savefig('{}_passing_reads_plot.pdf'.format(prefix))
     plt.show()
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze split reads', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-i','--input', metavar='input', type=str, help='Input .csv file')
     parser.add_argument('-g', '--group', type=str, default=None, help='group')
+    parser.add_argument('-p','--prefix', metavar='output', type=str, help='Output prefix')
 
     args = parser.parse_args()
 
-    make_plot(args.input, args.group)
+    make_plot(args.input, args.group, args.prefix)
 
 if __name__ == '__main__':
     main()

@@ -5,7 +5,9 @@ import seaborn as sns
 from collections import Counter
 def make_pwm_df(df):
     l = df.values
-    l = [s for s in l if type(s) == str]
+    l = [s for s in l if type(s) == str and len(s) > 0]
+    if not l:
+        return pd.DataFrame()
     max_len = max([len(s) for s in l])
     c = {i: Counter() for i in range(max_len)}
     for s in l:
@@ -46,7 +48,8 @@ def main():
     fig, axes = plt.subplots(3,2, figsize=(10,10), sharey=True)
     for group, new_dict in pwm_df_dict.items():
         for strand, new_df in new_dict.items():
-            new_df.plot(ax=axes[group_to_idx[group]][strand_to_idx[strand]],color=[color_dict.get(x, '#333333') for x in new_df.columns])
+            if not new_df.empty:
+                new_df.plot(ax=axes[group_to_idx[group]][strand_to_idx[strand]],color=[color_dict.get(x, '#333333') for x in new_df.columns])
     axes[0][0].set_title('Split positive direction')
     axes[0][1].set_title('Split negative direction')
     axes[0][0].set_ylabel('Positive insertions \n fraction of bases')
@@ -60,8 +63,12 @@ def main():
 
     fig, ax = plt.subplots(1,2)
 
-    sns.histplot(hue='strand', x='seq_pos_A', data=stats_df_over_mapq[stats_df_over_mapq['seq_pos_len'] > 9],ax=ax[0])
-    sns.histplot(hue='strand', x='seq_neg_T', data=stats_df_over_mapq[stats_df_over_mapq['seq_neg_len'] > 9],ax=ax[1])
+    pos_data = stats_df_over_mapq[stats_df_over_mapq['seq_pos_len'] > 9]
+    neg_data = stats_df_over_mapq[stats_df_over_mapq['seq_neg_len'] > 9]
+    if not pos_data.empty:
+        sns.histplot(hue='strand', x='seq_pos_A', data=pos_data, ax=ax[0])
+    if not neg_data.empty:
+        sns.histplot(hue='strand', x='seq_neg_T', data=neg_data, ax=ax[1])
     ax[0].set_xlabel('Number of As within first 10 bases')
     ax[1].set_xlabel('Number of Ts within first 10 bases')
     ax[0].set_title('Split reads positive direction')

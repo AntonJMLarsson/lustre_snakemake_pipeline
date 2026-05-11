@@ -42,9 +42,8 @@ for donor, donor_config in config['custom_references'].items():
         input: "results/custom_references/{prefix}.fa".format(prefix = donor)
         output: "results/custom_references/{prefix}.fa.ann".format(prefix = donor)
         shell: "{config[bwa]} index {input}"
-
 rule:
-    name: "bwa_mem"
+    name: "bwa_mem_remapping"
     input:
         reads="results/polyA_rich_fastqs/{sample}.fastq.gz", fa = lambda wildcards: "results/custom_references/{prefix}.fa".format(prefix = config['cbc_to_donor'][wildcards.sample]), faidx = lambda wildcards: "results/custom_references/{prefix}.fa.ann".format(prefix = config['cbc_to_donor'][wildcards.sample])
     output: "results/polyA_rich_mapped_custom/{sample}.bam" 
