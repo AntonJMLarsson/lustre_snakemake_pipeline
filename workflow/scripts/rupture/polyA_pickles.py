@@ -2,7 +2,7 @@ import argparse
 import pickle
 import glob
 import statistics
-from pandas import pd
+import pandas as pd
 
 
 def parse_args():
